@@ -1,57 +1,82 @@
 <!DOCTYPE html>
-<html>
-
-<head>
-    <title>timers</title>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Amanda Caven | Paul Bunyan</title>
     <style type="text/css">
-    canvas {
-        background-color: #ccc;
+
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        body{
+            background-image: url('paulbunyan.png');
+/*            background-position: bottom center;*/
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-size: cover;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .canvasWrap{
+            position: relative;
+        }
+
+    #canvasSnow {
+        background-color: rgba(0,0,0);
+/*    display: block;*/
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+
     }
+        
+        #kb{
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        #raf{
+            opacity: .3;
+        }
     </style>
+      
+<!-- BOOTSTRAP STYLESHEET -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+<!-- END BOOTSTRAP STYLESHEET -->  
+      
 </head>
 
 <body>
-    <h3>Set Interval</h3>
-    <canvas id="setInterval" width="800" height="100"></canvas>
-    <h3>Set Timeout</h3>
-    <canvas id="setTimeout" width="800" height="100"></canvas>
-    <h3>Request Animation Frame</h3>
-    <canvas id="raf" width="800" height="100"></canvas>
-    <h3>keyboard</h3>
-    <canvas id="kb" width="800" height="100"></canvas>
 
-    <p>Canvas is just creating an HTML5 element where you can paint the pixels. It creates an area that is just like the Processing sketches you make in programming class. Points to remember when working with canvas:
-    <ul>
-    	<li>all drawing methods for canvas refer to the context of the canvas. Canvas is the HTML element. Context is the contents (pixels) of the context.</li>
-    	<li>clearRect(x,y,w,h); is how you clear the pixels of the canvas. You can specify the amount (w,h) of the area you wish to clear, though you most often will just specify the full width and height of the canvas.</li>
-    	<li>read the documentation on canvas on MDN for insight on how to use canvas.</li>
-    </ul></p>
-    <p>Timers are old technology in javascript. Read the documentation for details on how to implement. The basic difference is the setInterval runs until you can clearInterval, while setTimeout runs once. Interval continuous, timeout once. Done.</p>
-    <p>RequestAnimationFrame runs very much like setTimeout. It has to be recalled each time it runs. The BIGGEST advantage is that it will throttle itself when the window is not active, thus preserving system resources when the page is not in focus.</p>
-    <p>Keyboard events you already know. For moving sprites, it is much like using Processing where the tracking of the keys is to booleans. One of the links leads to an object way if you want to take it up a notch.</p>
-	<h2>links</h2>
-	<h3>canvas</h3>
-	<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial">https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial</a></p>
-	<h3>timers</h3>
-	<p><a href="http://www.w3schools.com/js/js_timing.asp">http://www.w3schools.com/js/js_timing.asp</a></p>
-	<h3>request animation frame</h3>
-	<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame">https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame</a></p>
-	<h3>keyboard events</h3>
-	<p><a href="http://www.w3schools.com/jsref/event_key_keycode.asp">http://www.w3schools.com/jsref/event_key_keycode.asp</a></p>
-	<p><a href=""></a></p>
-	<p><a href="http://www.kirupa.com/html5/keyboard_events_in_javascript.htm">http://www.kirupa.com/html5/keyboard_events_in_javascript.htm</a></p>
-	<p><a href="http://www.siteforinfotech.com/2015/10/how-to-handle-keyboard-event-in-JavaScript.html">http://www.siteforinfotech.com/2015/10/how-to-handle-keyboard-event-in-JavaScript.html</a></p>
-	<p><a href="http://nokarma.org/2011/02/27/javascript-game-development-keyboard-input/">http://nokarma.org/2011/02/27/javascript-game-development-keyboard-input/ /br this presents a more advanced and optimized version of working with key events through objects. If you examine it in detail and research the concepts presented, it can lead to a more efficient way to code the keyboard.</a></p>
-
-
+     <div class="canvasWrap">   
+    <canvas id="canvasSnow"></canvas>
+  
+    <canvas id="kb" width="1200" height="768"></canvas>
+    </div>
 
     <script type="text/javascript">
-    var ctx1 = document.getElementById('setInterval').getContext('2d');
-    var ctx2 = document.getElementById('setTimeout').getContext('2d');
-    var ctx3 = document.getElementById('raf').getContext('2d');
+//    var ctx1 = document.getElementById('setInterval').getContext('2d');
+//    var ctx2 = document.getElementById('setTimeout').getContext('2d');
+//    var ctx3 = document.getElementById('raf').getContext('2d');
     var ctx4 = document.getElementById('kb').getContext('2d');
-    var guyImage = new Image();
-    guyImage.src = "guy.png";
+    var snowImage = new Image();
+    snowImage.src = "snowflake.png";
     var x1, x2, x3;
     var y, w, h;
     var speedX1, speedX2, speedX3;
@@ -68,43 +93,44 @@
     score1 = 0;
     score2 = 0;
     score3 = 0;
-    guyImage.addEventListener('load', startLoops, false);
+    snowImage.addEventListener('load', startLoops, false);
 
     function startLoops() {
-        timeoutLoop();
-        setInterval(intervalLoop, 1000 / 60);
+//        timeoutLoop();
+//        setInterval(intervalLoop, 1000 / 60);
         window.requestAnimationFrame(rafLoop);
         window.requestAnimationFrame(keyLoop);
     }
 
-    function timeoutLoop() {
-        ctx1.clearRect(0, 0, 800, 100);
-        ctx1.drawImage(guyImage, x1, y, w, h);
-        x1 += speedX1;
-        if (x1 > 800 - w || x1 < 0) {
-            speedX1 *= -1;
-            score1++;
-        }
-        ctx1.fillText(score1, 5, 15);
-        setTimeout(timeoutLoop, 1000 / 60);
+//    function timeoutLoop() {
+//        ctx1.clearRect(0, 0, 800, 100);
+//        ctx1.drawImage(guyImage, x1, y, w, h);
+//        x1 += speedX1;
+//        if (x1 > 800 - w || x1 < 0) {
+//            speedX1 *= -1;
+//            score1++;
+//        }
+//        ctx1.fillText(score1, 5, 15);
+//        setTimeout(timeoutLoop, 1000 / 60);
+//
+//    }
 
-    }
-
-    function intervalLoop() {
-        ctx2.clearRect(0, 0, 800, 100);
-        ctx2.drawImage(guyImage, x2, y, w, h);
-        x2 += speedX2;
-        if (x2 > 800 - w || x2 < 0) {
-            speedX2 *= -1;
-            score2++;
-        }
-        ctx2.fillText(score2, 5, 15);
-        // setTimeout(loop,1000/60);
-    }
-
+        /* WHATS HAPPENING IN FUNCclear canvas, draw image, draw text, tell image to run again*/
+//    function intervalLoop() {
+//        ctx2.clearRect(0, 0, 800, 100);
+//        ctx2.drawImage(guyImage, x2, y, w, h);
+//        x2 += speedX2;
+//        if (x2 > 800 - w || x2 < 0) {
+//            speedX2 *= -1;
+//            score2++;
+//        }
+//        ctx2.fillText(score2, 5, 15);
+//        // setTimeout(loop,1000/60);
+//    }
+//
     function rafLoop() {
         ctx3.clearRect(0, 0, 800, 100);
-        ctx3.drawImage(guyImage, x3, y, w, h);
+        ctx3.drawImage(snowImage, x3, y, w, h);
         x3 += speedX3;
         if (x3 > 800 - w || x3 < 0) {
             speedX3 *= -1;
@@ -182,11 +208,110 @@
         if (down) {
             ypos += 5;
         }
-        ctx4.clearRect(0, 0, 800, 100);
-        ctx4.drawImage(guyImage, xpos, ypos, w, h);
+        ctx4.clearRect(0, 0, 1200, 768);
+        ctx4.drawImage(snowImage, xpos, ypos, w, h);
         window.requestAnimationFrame(keyLoop);
     }
+        
+        
+/*SNOW*/
+        window.onload = function(){
+	//canvas init
+	var canvas = document.getElementById("canvasSnow");
+	var ctx = canvas.getContext("2d");
+	
+	//canvas dimensions
+	var W = window.innerWidth;
+	var H = window.innerHeight;
+	canvas.width = W;
+	canvas.height = H;
+	
+	//snowflake particles
+	var mp = 25; //max particles
+	var particles = [];
+	for(var i = 0; i < mp; i++)
+	{
+		particles.push({
+			x: Math.random()*W, //x-coordinate
+			y: Math.random()*H, //y-coordinate
+			r: Math.random()*4+1, //radius
+			d: Math.random()*mp //density
+		})
+	}
+	
+	//Lets draw the flakes
+	function draw()
+	{
+		ctx.clearRect(0, 0, W, H);
+		
+		ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+		ctx.beginPath();
+		for(var i = 0; i < mp; i++)
+		{
+			var p = particles[i];
+			ctx.moveTo(p.x, p.y);
+			ctx.arc(p.x, p.y, p.r, 0, Math.PI*2, true);
+		}
+		ctx.fill();
+		update();
+	}
+	
+	//Function to move the snowflakes
+	//angle will be an ongoing incremental flag. Sin and Cos functions will be applied to it to create vertical and horizontal movements of the flakes
+	var angle = 0;
+	function update()
+	{
+		angle += 0.01;
+		for(var i = 0; i < mp; i++)
+		{
+			var p = particles[i];
+			//Updating X and Y coordinates
+			//We will add 1 to the cos function to prevent negative values which will lead flakes to move upwards
+			//Every particle has its own density which can be used to make the downward movement different for each flake
+			//Lets make it more random by adding in the radius
+			p.y += Math.cos(angle+p.d) + 1 + p.r/2;
+			p.x += Math.sin(angle) * 2;
+			
+			//Sending flakes back from the top when it exits
+			//Lets make it a bit more organic and let flakes enter from the left and right also.
+			if(p.x > W+5 || p.x < -5 || p.y > H)
+			{
+				if(i%3 > 0) //66.67% of the flakes
+				{
+					particles[i] = {x: Math.random()*W, y: -10, r: p.r, d: p.d};
+				}
+				else
+				{
+					//If the flake is exitting from the right
+					if(Math.sin(angle) > 0)
+					{
+						//Enter from the left
+						particles[i] = {x: -5, y: Math.random()*H, r: p.r, d: p.d};
+					}
+					else
+					{
+						//Enter from the right
+						particles[i] = {x: W+5, y: Math.random()*H, r: p.r, d: p.d};
+					}
+				}
+			}
+		}
+	}
+	
+	//animation loop
+	setInterval(draw, 33);
+}
+
+/*END SNOW*/
+
     </script>
+    
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+<!-- END JQUERY FOR BOOTSTRAP -->
+    
 </body>
 
 </html>
